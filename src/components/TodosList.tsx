@@ -8,7 +8,7 @@ export const TodosList = ({ completed }: TodosListProps) => {
   const { todos, isLoading, isError } = useTodos();
 
   const heading = completed ? "Completed" : "Incomplete";
-  const message = completed
+  const emptyMessage = completed
     ? "No completed todos. Get to work!"
     : "No incomplete todos. Add a new one!";
 
@@ -25,7 +25,7 @@ export const TodosList = ({ completed }: TodosListProps) => {
               return <li key={todo.id}>{todo.title}</li>;
             })
           ) : (
-            <p>{message}</p>
+            <p>{emptyMessage}</p>
           )}
         </ul>
       )}

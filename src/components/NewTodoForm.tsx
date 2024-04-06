@@ -11,10 +11,28 @@ export const NewTodoForm = () => {
     setInput(e.target.value);
   };
 
+  const handleClick = async () => {
+    try {
+      await mutate(requestCreateTodo({ title: input }), {
+        optimisticData: [
+          ...todos,
+          { id: 0, title: input, completed: false, priority: 9999 },
+        ],
+        rollbackOnError: true,
+        populateCache: true,
+        revalidate: true,
+      });
+      setInput("");
+      console.log("Successfully added the new item.");
+    } catch (e) {
+      console.log("Failed to add the new item.");
+    }
+  };
+
   return (
     <form
       className="flex flex-col space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-4 sm:flex-row sm:space-x-2 sm:space-y-0"
-      onSubmit={(ev) => ev.preventDefault()}
+      onSubmit={(e) => e.preventDefault()}
     >
       <div className="relative w-full">
         <input
@@ -27,30 +45,14 @@ export const NewTodoForm = () => {
         />
         {input && (
           <HiXCircle
-            className="absolute right-3 top-3.5 text-2xl text-gray-300"
+            className="absolute right-3 top-3.5 cursor-pointer text-2xl text-gray-300"
             onClick={() => setInput("")}
           />
         )}
       </div>
       <button
         disabled={!input}
-        onClick={async () => {
-          try {
-            await mutate(requestCreateTodo({ title: input }), {
-              optimisticData: [
-                ...todos,
-                { id: 0, title: input, completed: false, priority: 9999 },
-              ],
-              rollbackOnError: true,
-              populateCache: true,
-              revalidate: true,
-            });
-            setInput("");
-            console.log("Successfully added the new item.");
-          } catch (e) {
-            console.log("Failed to add the new item.");
-          }
-        }}
+        onClick={handleClick}
         type="submit"
         className="min-w-[128px] rounded border border-red-600 bg-red-500 px-2 text-base font-medium leading-10 text-white hover:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-300 disabled:border-transparent disabled:bg-gray-200"
       >
