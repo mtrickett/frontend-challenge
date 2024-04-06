@@ -1,10 +1,10 @@
 import { requestCreateTodo } from "@/lib/todos-lib";
-import useSWR from "swr";
 import { useState } from "react";
+import { useTodos } from "@/hooks/useTodos";
 
 export const NewTodoForm = () => {
   const [input, setInput] = useState("");
-  const { mutate } = useSWR("todos");
+  const { todos, mutate } = useTodos();
 
   const handleChange = (e: any) => {
     setInput(e.target.value);
@@ -26,7 +26,15 @@ export const NewTodoForm = () => {
         disabled={!input}
         onClick={async () => {
           try {
-            await mutate(requestCreateTodo({ title: input }));
+            await mutate(requestCreateTodo({ title: input }), {
+              optimisticData: [
+                ...todos,
+                { id: 0, title: input, completed: false, priority: 9999 },
+              ],
+              rollbackOnError: true,
+              populateCache: true,
+              revalidate: true,
+            });
             setInput("");
             console.log("Successfully added the new item.");
           } catch (e) {
