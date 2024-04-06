@@ -1,5 +1,6 @@
 import { HiOutlineClipboardDocumentCheck as Icon } from "react-icons/hi2";
 import NewTodoForm from "./NewTodoForm";
+import TodosList from "./TodosList";
 import { useTodos } from "@/hooks/useTodos";
 
 const Header = () => (
@@ -10,7 +11,7 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
-  const { todos, isLoading, isError } = useTodos();
+  const { isLoading, isError } = useTodos();
 
   return (
     <div className="space-y-6">
@@ -18,17 +19,8 @@ export const TodosHome = () => {
       <NewTodoForm />
       {isLoading && <p>loading...</p>}
       {isError && <p>error :(</p>}
-      <ul>
-        {todos.length > 0
-          ? todos.map((todo) => {
-              return (
-                <li key={todo.id}>
-                  {todo.title} - {todo.completed.toString()}
-                </li>
-              );
-            })
-          : null}
-      </ul>
+      <TodosList completed={false} />
+      <TodosList completed={true} />
     </div>
   );
 };
