@@ -11,7 +11,7 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
-  const { isLoading, isError } = useTodos();
+  const { todos, isLoading, isError } = useTodos();
 
   return (
     <div className="space-y-6">
@@ -19,8 +19,12 @@ export const TodosHome = () => {
       <NewTodoForm />
       {isLoading && <p>loading...</p>}
       {isError && <p>error :(</p>}
-      <TodosList completed={false} />
-      <TodosList completed={true} />
+      {todos.length > 0 && (
+        <>
+          <TodosList completed={false} />
+          <TodosList completed={true} />
+        </>
+      )}
     </div>
   );
 };
