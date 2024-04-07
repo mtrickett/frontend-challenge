@@ -1,5 +1,6 @@
-import { HiCheck } from "react-icons/hi2";
-import { requestUpdateTodo } from "@/lib/todos-lib";
+import { HiCheck, HiOutlineTrash } from "react-icons/hi2";
+import { requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
+
 import { useTodos } from "@/hooks/useTodos";
 
 type TodosListProps = {
@@ -28,6 +29,15 @@ export const TodosList = ({ completed }: TodosListProps) => {
     }
   };
 
+  const handleDelete = async (todo: any) => {
+    try {
+      await mutate(requestDeleteTodo(todo.id));
+      console.log("Successfully deleted the todo.");
+    } catch (e) {
+      console.log("Failed to delete the todo.");
+    }
+  };
+
   return (
     <>
       <h2 className="inline-block text-2xl font-semibold">{heading}</h2>
@@ -40,7 +50,7 @@ export const TodosList = ({ completed }: TodosListProps) => {
             todosList.map((todo) => {
               return (
                 <li key={todo.id} className="py-2.5">
-                  <label className="text-md group -mx-4 block rounded-xl border border-white p-4 font-medium hover:cursor-pointer hover:border-stone-200 hover:bg-stone-50">
+                  <label className="text-md group relative -mx-4 block rounded-xl border border-white p-4 font-medium hover:cursor-pointer hover:border-stone-200 hover:bg-stone-50">
                     <input
                       type="checkbox"
                       checked={todo.completed}
@@ -51,10 +61,16 @@ export const TodosList = ({ completed }: TodosListProps) => {
                       className={`mr-3 inline-block h-9 w-9 rounded-full border-2 border-stone-300 p-1.5 text-center text-white ${
                         todo.completed
                           ? "border-none bg-green-600"
-                          : "group-hover:border-stone-400 "
+                          : "group-hover:border-stone-400"
                       }`}
                     />
                     {todo.title}
+                    <button
+                      onClick={() => handleDelete(todo)}
+                      className="absolute right-2 top-2 hidden p-3 text-2xl text-stone-400 hover:text-red-600 group-hover:inline-block"
+                    >
+                      <HiOutlineTrash />
+                    </button>
                   </label>
                 </li>
               );
