@@ -30,8 +30,8 @@ export const TodosHome = () => {
       )}
       <Header />
       <NewTodoForm onError={handleError} />
-      {isLoading && <p>loading...</p>}
-      {isError && <p>error :(</p>}
+      {isLoading && <p>Loading...</p>}
+      {isError && <p>Something went wrong. Please refresh and try again.</p>}
       {todos.length > 0 && (
         <>
           <TodosList completed={false} />
