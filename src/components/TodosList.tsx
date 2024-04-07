@@ -1,4 +1,5 @@
 import { HiCheck } from "react-icons/hi2";
+import { requestUpdateTodo } from "@/lib/todos-lib";
 import { useTodos } from "@/hooks/useTodos";
 
 type TodosListProps = {
@@ -6,7 +7,7 @@ type TodosListProps = {
 };
 
 export const TodosList = ({ completed }: TodosListProps) => {
-  const { todos, isLoading, isError } = useTodos();
+  const { todos, isLoading, isError, mutate } = useTodos();
 
   const heading = completed ? "Completed" : "Incomplete";
   const emptyMessage = completed
@@ -15,6 +16,17 @@ export const TodosList = ({ completed }: TodosListProps) => {
 
   const todosList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
+
+  const handleChange = async (todo: any) => {
+    todo.completed = !todo.completed;
+
+    try {
+      await mutate(requestUpdateTodo(todo));
+      console.log("Successfully updated the todo.");
+    } catch (e) {
+      console.log("Failed to update the todo.");
+    }
+  };
 
   return (
     <>
@@ -33,9 +45,7 @@ export const TodosList = ({ completed }: TodosListProps) => {
                       type="checkbox"
                       checked={todo.completed}
                       className="appearance-none"
-                      onChange={() => {
-                        console.log("check"); // update todo
-                      }}
+                      onChange={() => handleChange(todo)}
                     />
                     <HiCheck
                       className={`mr-3 inline-block h-9 w-9 rounded-full border-2 border-stone-300 p-1.5 text-center text-white ${

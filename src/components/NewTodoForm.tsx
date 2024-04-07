@@ -23,9 +23,9 @@ export const NewTodoForm = () => {
         revalidate: true,
       });
       setInput("");
-      console.log("Successfully added the new item.");
+      console.log("Successfully added the new todo.");
     } catch (e) {
-      console.log("Failed to add the new item.");
+      console.log("Failed to add the new todo.");
     }
   };
 
