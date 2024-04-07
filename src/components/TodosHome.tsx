@@ -1,6 +1,8 @@
+import ErrorMessage from "./ErrorMessage";
 import { HiOutlineClipboardDocumentCheck as Icon } from "react-icons/hi2";
 import NewTodoForm from "./NewTodoForm";
 import TodosList from "./TodosList";
+import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
 const Header = () => (
@@ -11,14 +13,23 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
+  const [mutateError, setMutateError] = useState(false);
   const { todos, isLoading, isError } = useTodos();
 
   return (
     <div className="space-y-6">
+      {mutateError && (
+        <ErrorMessage
+          message={"Oops, there was a problem!"}
+          dismiss={() => setMutateError(false)}
+        />
+      )}
       <Header />
-      <NewTodoForm />
-      {isLoading && <p>loading...</p>}
-      {isError && <p>error :(</p>}
+      <NewTodoForm
+        toggleError={(hasError: boolean) => setMutateError(hasError)}
+      />
+      {isLoading && <p>Loading...</p>}
+      {isError && <p>Something went wrong. Please refresh and try again.</p>}
       {todos.length > 0 && (
         <>
           <TodosList completed={false} />

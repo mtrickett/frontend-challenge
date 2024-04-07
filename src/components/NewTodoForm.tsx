@@ -3,7 +3,11 @@ import { requestCreateTodo } from "@/lib/todos-lib";
 import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
-export const NewTodoForm = () => {
+type NewTodoFormProps = {
+  toggleError: (hasError: boolean) => void;
+};
+
+export const NewTodoForm = ({ toggleError }: NewTodoFormProps) => {
   const [input, setInput] = useState("");
   const { todos, mutate } = useTodos();
 
@@ -13,19 +17,13 @@ export const NewTodoForm = () => {
 
   const handleClick = async () => {
     try {
-      await mutate(requestCreateTodo({ title: input }), {
-        optimisticData: [
-          ...todos,
-          { id: 0, title: input, completed: false, priority: 9999 },
-        ],
-        rollbackOnError: true,
-        populateCache: true,
-        revalidate: true,
-      });
+      const newTodo = { id: "", title: input, completed: false, priority: 0 };
+      await requestCreateTodo(newTodo);
+      mutate([...todos, newTodo]);
       setInput("");
-      console.log("Successfully added the new todo.");
+      toggleError(false);
     } catch (e) {
-      console.log("Failed to add the new todo.");
+      toggleError(true);
     }
   };
 

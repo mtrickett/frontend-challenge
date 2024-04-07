@@ -22,8 +22,8 @@ export const TodosList = ({ completed }: TodosListProps) => {
     todo.completed = !todo.completed;
 
     try {
-      await mutate(requestUpdateTodo(todo));
-      console.log("Successfully updated the todo.");
+      await requestUpdateTodo(todo);
+      mutate([...todos]);
     } catch (e) {
       console.log("Failed to update the todo.");
     }
@@ -31,8 +31,8 @@ export const TodosList = ({ completed }: TodosListProps) => {
 
   const handleDelete = async (todo: any) => {
     try {
-      await mutate(requestDeleteTodo(todo.id));
-      console.log("Successfully deleted the todo.");
+      await requestDeleteTodo(todo.id);
+      mutate([...todos]);
     } catch (e) {
       console.log("Failed to delete the todo.");
     }
