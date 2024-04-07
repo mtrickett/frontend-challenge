@@ -1,6 +1,8 @@
+import ErrorMessage from "./ErrorMessage";
 import { HiOutlineClipboardDocumentCheck as Icon } from "react-icons/hi2";
 import NewTodoForm from "./NewTodoForm";
 import TodosList from "./TodosList";
+import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
 const Header = () => (
@@ -11,13 +13,23 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
-  const { todos, isLoading, isError, error } = useTodos();
+  const [errorMessage, setErrorMessage] = useState("");
+  const { todos, isLoading, isError } = useTodos();
+
+  const handleError = () => {
+    setErrorMessage("Oops, there was a problem!");
+  };
 
   return (
     <div className="space-y-6">
-      {error && <p>ERRORRRRR</p>}
+      {errorMessage && (
+        <ErrorMessage
+          message={errorMessage}
+          dismiss={() => setErrorMessage("")}
+        />
+      )}
       <Header />
-      <NewTodoForm />
+      <NewTodoForm onError={handleError} />
       {isLoading && <p>loading...</p>}
       {isError && <p>error :(</p>}
       {todos.length > 0 && (

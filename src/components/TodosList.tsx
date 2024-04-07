@@ -24,7 +24,6 @@ export const TodosList = ({ completed }: TodosListProps) => {
     try {
       await requestUpdateTodo(todo);
       mutate([...todos]);
-      console.log("Successfully updated the todo.");
     } catch (e) {
       console.log("Failed to update the todo.");
     }
@@ -34,7 +33,6 @@ export const TodosList = ({ completed }: TodosListProps) => {
     try {
       await requestDeleteTodo(todo.id);
       mutate([...todos]);
-      console.log("Successfully deleted the todo.");
     } catch (e) {
       console.log("Failed to delete the todo.");
     }

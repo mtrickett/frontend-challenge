@@ -1,10 +1,13 @@
 import { HiXCircle } from "react-icons/hi2";
 import { requestCreateTodo } from "@/lib/todos-lib";
-import { useSWRConfig } from "swr";
 import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
-export const NewTodoForm = () => {
+type NewTodoFormProps = {
+  onError: () => void;
+};
+
+export const NewTodoForm = ({ onError }: NewTodoFormProps) => {
   const [input, setInput] = useState("");
   const { todos, mutate } = useTodos();
 
@@ -18,9 +21,8 @@ export const NewTodoForm = () => {
       await requestCreateTodo(newTodo);
       mutate([...todos, newTodo]);
       setInput("");
-      console.log("Successfully added the new todo.");
     } catch (e) {
-      console.log("Failed to add the new todo.");
+      onError();
     }
   };
 
