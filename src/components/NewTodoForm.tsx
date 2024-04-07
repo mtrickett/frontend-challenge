@@ -1,5 +1,6 @@
 import { HiXCircle } from "react-icons/hi2";
 import { requestCreateTodo } from "@/lib/todos-lib";
+import { useSWRConfig } from "swr";
 import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
@@ -13,15 +14,9 @@ export const NewTodoForm = () => {
 
   const handleClick = async () => {
     try {
-      await mutate(requestCreateTodo({ title: input }), {
-        optimisticData: [
-          ...todos,
-          { id: 0, title: input, completed: false, priority: 9999 },
-        ],
-        rollbackOnError: true,
-        populateCache: true,
-        revalidate: true,
-      });
+      const newTodo = { id: "", title: input, completed: false, priority: 0 };
+      await requestCreateTodo(newTodo);
+      mutate([...todos, newTodo]);
       setInput("");
       console.log("Successfully added the new todo.");
     } catch (e) {

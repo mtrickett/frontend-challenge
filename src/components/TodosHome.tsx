@@ -11,10 +11,11 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
-  const { todos, isLoading, isError } = useTodos();
+  const { todos, isLoading, isError, error } = useTodos();
 
   return (
     <div className="space-y-6">
+      {error && <p>ERRORRRRR</p>}
       <Header />
       <NewTodoForm />
       {isLoading && <p>loading...</p>}

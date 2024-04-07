@@ -22,6 +22,10 @@ export const requestCreateTodo = async (
     body: JSON.stringify(todo),
   });
 
+  if (!res.ok) {
+    throw new Error("Failed to add the new todo.");
+  }
+
   return {
     error: !res.ok ? await res.json() : null,
     data: res.ok ? await res.json() : null,
@@ -40,6 +44,10 @@ export const requestUpdateTodo = async (
     body: JSON.stringify(todo),
   });
 
+  if (!res.ok) {
+    throw new Error("Failed to update the todo.");
+  }
+
   return {
     error: !res.ok ? await res.json() : null,
     data: res.ok ? await res.json() : null,
@@ -53,6 +61,10 @@ export const requestDeleteTodo = async (
   const res = await fetch(`/todos/${id}`, {
     method: "DELETE",
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete the todo.");
+  }
 
   return {
     error: !res.ok ? await res.json() : null,
