@@ -13,23 +13,21 @@ const Header = () => (
 );
 
 export const TodosHome = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [mutateError, setMutateError] = useState(false);
   const { todos, isLoading, isError } = useTodos();
-
-  const handleError = () => {
-    setErrorMessage("Oops, there was a problem!");
-  };
 
   return (
     <div className="space-y-6">
-      {errorMessage && (
+      {mutateError && (
         <ErrorMessage
-          message={errorMessage}
-          dismiss={() => setErrorMessage("")}
+          message={"Oops, there was a problem!"}
+          dismiss={() => setMutateError(false)}
         />
       )}
       <Header />
-      <NewTodoForm onError={handleError} />
+      <NewTodoForm
+        toggleError={(hasError: boolean) => setMutateError(hasError)}
+      />
       {isLoading && <p>Loading...</p>}
       {isError && <p>Something went wrong. Please refresh and try again.</p>}
       {todos.length > 0 && (

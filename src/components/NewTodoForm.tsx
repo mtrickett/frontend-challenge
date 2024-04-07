@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useTodos } from "@/hooks/useTodos";
 
 type NewTodoFormProps = {
-  onError: () => void;
+  toggleError: (hasError: boolean) => void;
 };
 
-export const NewTodoForm = ({ onError }: NewTodoFormProps) => {
+export const NewTodoForm = ({ toggleError }: NewTodoFormProps) => {
   const [input, setInput] = useState("");
   const { todos, mutate } = useTodos();
 
@@ -21,8 +21,9 @@ export const NewTodoForm = ({ onError }: NewTodoFormProps) => {
       await requestCreateTodo(newTodo);
       mutate([...todos, newTodo]);
       setInput("");
+      toggleError(false);
     } catch (e) {
-      onError();
+      toggleError(true);
     }
   };
 
