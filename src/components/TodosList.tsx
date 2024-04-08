@@ -1,21 +1,18 @@
 import { HiCheck, HiOutlineTrash } from "react-icons/hi2";
-import { requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
+import { Todo, requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
 
 import { useTodos } from "@/hooks/useTodos";
 
 type TodosListProps = {
   completed: boolean;
+  toggleError: (hasError: boolean) => void;
 };
 
-export const TodosList = ({ completed }: TodosListProps) => {
-  const { todos, isLoading, isError, mutate } = useTodos();
-
+export const TodosList = ({ completed, toggleError }: TodosListProps) => {
+  const { todos, mutate } = useTodos();
   const heading = completed ? "Completed" : "Incomplete";
-  const emptyMessage = completed
-    ? "No completed todos. Get to work!"
-    : "No incomplete todos. Add a new one!";
 
-  const todosList =
+  let filteredList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
 
   const handleChange = async (todo: any) => {
@@ -24,8 +21,9 @@ export const TodosList = ({ completed }: TodosListProps) => {
     try {
       await requestUpdateTodo(todo);
       mutate([...todos]);
+      toggleError(false);
     } catch (e) {
-      console.log("Failed to update the todo.");
+      toggleError(true);
     }
   };
 
@@ -33,21 +31,22 @@ export const TodosList = ({ completed }: TodosListProps) => {
     try {
       await requestDeleteTodo(todo.id);
       mutate([...todos]);
+      toggleError(false);
     } catch (e) {
-      console.log("Failed to delete the todo.");
+      toggleError(true);
     }
   };
 
   return (
     <>
-      <h2 className="inline-block text-2xl font-semibold">{heading}</h2>
-      <span className="ml-3 inline-block h-9 w-9 rounded-full bg-gray-700 p-2 text-center align-bottom text-sm font-bold text-white">
-        {todosList.length}
-      </span>
-      {!isLoading && !isError && (
-        <ul className="m-0 flex flex-col divide-y divide-slate-200 border-t border-slate-200">
-          {todosList.length > 0 ? (
-            todosList.map((todo) => {
+      {filteredList.length > 0 && (
+        <>
+          <h2 className="inline-block text-2xl font-semibold">{heading}</h2>
+          <span className="ml-3 inline-block h-9 w-9 rounded-full bg-gray-700 p-2 text-center align-bottom text-sm font-bold text-white">
+            {filteredList.length}
+          </span>
+          <ul className="m-0 flex flex-col divide-y divide-slate-200 border-t border-slate-200">
+            {filteredList.map((todo: Todo) => {
               return (
                 <li key={todo.id} className="py-2.5">
                   <label className="text-md group relative -mx-4 block rounded-xl border border-white p-4 font-medium hover:cursor-pointer hover:border-stone-200 hover:bg-stone-50">
@@ -74,11 +73,9 @@ export const TodosList = ({ completed }: TodosListProps) => {
                   </label>
                 </li>
               );
-            })
-          ) : (
-            <p className="my-4">{emptyMessage}</p>
-          )}
-        </ul>
+            })}
+          </ul>
+        </>
       )}
     </>
   );
