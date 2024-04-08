@@ -12,7 +12,7 @@ type TodosListProps = {
 
 export const TodosList = ({ completed, toggleError }: TodosListProps) => {
   const { todos, mutate } = useTodos();
-  const { width, height } = useWindowSize();
+  const { width, height } = useWindowSize(); // for confetti canvas size (bonus feature)
 
   const heading = completed ? "Completed" : "Incomplete";
 
@@ -24,7 +24,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
 
     try {
       await requestUpdateTodo(todo);
-      mutate([...todos]);
+      mutate(todos);
       toggleError(false);
     } catch (e) {
       toggleError(true);
@@ -34,7 +34,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
   const handleDelete = async (todo: Todo) => {
     try {
       await requestDeleteTodo(todo.id);
-      mutate([...todos]);
+      mutate(todos);
       toggleError(false);
     } catch (e) {
       toggleError(true);
@@ -81,7 +81,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
           </ul>
         </>
       )}
-      {/* Show confetti when all task are complete */}
+      {/* Bonus feature - Show confetti when all todos are complete */}
       {completed && filteredList.length == todos.length && (
         <Confetti
           className="!m-0"
