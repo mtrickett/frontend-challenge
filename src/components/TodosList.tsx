@@ -16,7 +16,6 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
 
   const heading = completed ? "Completed" : "Incomplete";
 
-  console.log(width, height);
   let filteredList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
 
@@ -71,7 +70,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
                     {todo.title}
                     <button
                       onClick={() => handleDelete(todo)}
-                      className="absolute right-2 top-2 hidden p-3 text-2xl text-stone-400 hover:text-red-600 group-hover:inline-block"
+                      className="absolute right-2 top-2 p-3 text-2xl text-stone-400 hover:text-red-600 group-hover:inline-block md:hidden"
                     >
                       <HiOutlineTrash />
                     </button>
