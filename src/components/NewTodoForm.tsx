@@ -11,7 +11,7 @@ export const NewTodoForm = ({ toggleError }: NewTodoFormProps) => {
   const [input, setInput] = useState("");
   const { todos, mutate } = useTodos();
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 

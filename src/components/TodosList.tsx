@@ -15,7 +15,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
   let filteredList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
 
-  const handleChange = async (todo: any) => {
+  const handleChange = async (todo: Todo) => {
     todo.completed = !todo.completed;
 
     try {
@@ -27,7 +27,7 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
     }
   };
 
-  const handleDelete = async (todo: any) => {
+  const handleDelete = async (todo: Todo) => {
     try {
       await requestDeleteTodo(todo.id);
       mutate([...todos]);
