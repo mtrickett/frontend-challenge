@@ -16,6 +16,10 @@ export const TodosHome = () => {
   const [mutateError, setMutateError] = useState(false);
   const { todos, isLoading, isError } = useTodos();
 
+  const toggleError = (hasError: boolean) => {
+    setMutateError(hasError);
+  };
+
   return (
     <div className="space-y-6">
       {mutateError && (
@@ -25,15 +29,13 @@ export const TodosHome = () => {
         />
       )}
       <Header />
-      <NewTodoForm
-        toggleError={(hasError: boolean) => setMutateError(hasError)}
-      />
+      <NewTodoForm toggleError={toggleError} />
       {isLoading && <p>Loading...</p>}
       {isError && <p>Something went wrong. Please refresh and try again.</p>}
       {todos.length > 0 && (
         <>
-          <TodosList completed={false} />
-          <TodosList completed={true} />
+          <TodosList completed={false} toggleError={toggleError} />
+          <TodosList completed={true} toggleError={toggleError} />
         </>
       )}
     </div>

@@ -1,53 +1,56 @@
 import { HiCheck, HiOutlineTrash } from "react-icons/hi2";
-import { requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
+import { Todo, requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
 
+import Confetti from "react-confetti";
 import { useTodos } from "@/hooks/useTodos";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 type TodosListProps = {
   completed: boolean;
+  toggleError: (hasError: boolean) => void;
 };
 
-export const TodosList = ({ completed }: TodosListProps) => {
-  const { todos, isLoading, isError, mutate } = useTodos();
+export const TodosList = ({ completed, toggleError }: TodosListProps) => {
+  const { todos, mutate } = useTodos();
+  const { width, height } = useWindowSize();
 
   const heading = completed ? "Completed" : "Incomplete";
-  const emptyMessage = completed
-    ? "No completed todos. Get to work!"
-    : "No incomplete todos. Add a new one!";
 
-  const todosList =
+  let filteredList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
 
-  const handleChange = async (todo: any) => {
+  const handleChange = async (todo: Todo) => {
     todo.completed = !todo.completed;
 
     try {
       await requestUpdateTodo(todo);
       mutate([...todos]);
+      toggleError(false);
     } catch (e) {
-      console.log("Failed to update the todo.");
+      toggleError(true);
     }
   };
 
-  const handleDelete = async (todo: any) => {
+  const handleDelete = async (todo: Todo) => {
     try {
       await requestDeleteTodo(todo.id);
       mutate([...todos]);
+      toggleError(false);
     } catch (e) {
-      console.log("Failed to delete the todo.");
+      toggleError(true);
     }
   };
 
   return (
     <>
-      <h2 className="inline-block text-2xl font-semibold">{heading}</h2>
-      <span className="ml-3 inline-block h-9 w-9 rounded-full bg-gray-700 p-2 text-center align-bottom text-sm font-bold text-white">
-        {todosList.length}
-      </span>
-      {!isLoading && !isError && (
-        <ul className="m-0 flex flex-col divide-y divide-slate-200 border-t border-slate-200">
-          {todosList.length > 0 ? (
-            todosList.map((todo) => {
+      {filteredList.length > 0 && (
+        <>
+          <h2 className="inline-block text-2xl font-semibold">{heading}</h2>
+          <span className="ml-3 inline-block h-9 w-9 rounded-full bg-gray-700 p-2 text-center align-bottom text-sm font-bold text-white">
+            {filteredList.length}
+          </span>
+          <ul className="m-0 flex flex-col divide-y divide-slate-200 border-t border-slate-200">
+            {filteredList.map((todo: Todo) => {
               return (
                 <li key={todo.id} className="py-2.5">
                   <label className="text-md group relative -mx-4 block rounded-xl border border-white p-4 font-medium hover:cursor-pointer hover:border-stone-200 hover:bg-stone-50">
@@ -67,18 +70,25 @@ export const TodosList = ({ completed }: TodosListProps) => {
                     {todo.title}
                     <button
                       onClick={() => handleDelete(todo)}
-                      className="absolute right-2 top-2 hidden p-3 text-2xl text-stone-400 hover:text-red-600 group-hover:inline-block"
+                      className="absolute right-2 top-2 p-3 text-2xl text-stone-400 hover:text-red-600 group-hover:inline-block md:hidden"
                     >
                       <HiOutlineTrash />
                     </button>
                   </label>
                 </li>
               );
-            })
-          ) : (
-            <p className="my-4">{emptyMessage}</p>
-          )}
-        </ul>
+            })}
+          </ul>
+        </>
+      )}
+      {/* Show confetti when all task are complete */}
+      {completed && filteredList.length == todos.length && (
+        <Confetti
+          className="!m-0"
+          width={width}
+          height={height}
+          recycle={false}
+        />
       )}
     </>
   );
