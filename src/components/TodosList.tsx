@@ -1,7 +1,9 @@
 import { HiCheck, HiOutlineTrash } from "react-icons/hi2";
 import { Todo, requestDeleteTodo, requestUpdateTodo } from "@/lib/todos-lib";
 
+import Confetti from "react-confetti";
 import { useTodos } from "@/hooks/useTodos";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 type TodosListProps = {
   completed: boolean;
@@ -10,8 +12,11 @@ type TodosListProps = {
 
 export const TodosList = ({ completed, toggleError }: TodosListProps) => {
   const { todos, mutate } = useTodos();
+  const { width, height } = useWindowSize();
+
   const heading = completed ? "Completed" : "Incomplete";
 
+  console.log(width, height);
   let filteredList =
     todos.length > 0 ? todos.filter((todo) => todo.completed == completed) : [];
 
@@ -76,6 +81,15 @@ export const TodosList = ({ completed, toggleError }: TodosListProps) => {
             })}
           </ul>
         </>
+      )}
+      {/* Show confetti when all task are complete */}
+      {completed && filteredList.length == todos.length && (
+        <Confetti
+          className="!m-0"
+          width={width}
+          height={height}
+          recycle={false}
+        />
       )}
     </>
   );
