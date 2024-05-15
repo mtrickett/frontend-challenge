@@ -1,4 +1,4 @@
-# Overview
+# Front-end Challenge
 
 A "To Do App" coding challenge for frontend developers at ~~redacted~~.
 
